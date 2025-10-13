@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Hash;
 use Auth;
-
+use App\Models\VariantType;
+use App\Models\ProductWareHouse;
+use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
 {
     public function add_user_show()
@@ -294,4 +296,101 @@ class AdminController extends Controller
                         ->insert($values);
         return redirect()->back();
     }
+
+    public function showVariantLists($productId) {
+
+        $variantList = VariantType::where('product_id',$productId)->get();
+        $productDetails = DB::table('all_products')->select('product_name')->where('id','=',$productId)->first();
+        return view('admin.products.variant',compact('variantList','productId','productDetails'));
+    }
+
+    public function showVariantFields($productId,$isView = false) {
+        $data = [];
+        $data['isView'] = false;
+        $data['prductId'] = $productId;
+
+        if($isView) {
+            $data['isView'] = $isView;
+            $data['variantId'] = $productId;
+            $data['variantData'] = VariantType::where('id', $productId)->first();
+            $data['prductId'] = @$data['variantData']['product_id'];
+        }
+        
+        return view('admin.products.add-variant',compact('data'));
+    }
+
+    public function createNewVariant(Request $request) {
+
+        if($request->has('variant_id')) {
+            $variant = VariantType::where('id',$request->variant_id)->first();
+
+            $variant->update([
+                'color_code' => $request->color_code,
+                'color_name' => $request->color_name,
+                'sku'        => $request->sku,
+                'product_id' => $request->product_id,
+            ]);
+            return redirect()->route('admin.update_product_details_show_variant', $request->product_id);
+        }
+
+        $validator = Validator::make($request->all(), [
+        'color_code' => 'required|string|max:50',
+        'color_name' => 'required|string|max:50',
+        'sku'        => 'required|string|max:100|unique:variant_types,sku',
+        'product_id' => 'required|exists:all_products,id',
+        ]);
+       
+       
+       if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        $validated = $validator->validated();
+
+       
+        $variant = new VariantType();
+        $variant->color_code  = $validated['color_code'];
+        $variant->color_name  = $validated['color_name'];
+        $variant->sku         = $validated['sku'];
+        $variant->product_id  = $validated['product_id'];
+        $variant->save();
+
+        
+        return redirect()->route('admin.update_product_details_show_variant', $validated['product_id']);
+
+    }
+
+    public function deleteVariant($variantId) {
+        // Find the variant by ID
+        $variant = VariantType::find($variantId)?->delete();
+
+        // Redirect back with success message
+        return redirect()->back();
+    }
+
+   public function showWareHouses(Request $request, $productId) {
+        $productDetails = DB::table('all_products')->select('product_name')->where('id', $productId)->first();
+        $countries = DB::table('countries')->select('id', 'name')->get();
+        $selectedWarehouseIds = ProductWareHouse::where('product_id', $productId)->where('status', 1)->pluck('warehouse_id')->toArray();
+        $warehouses = $request->has('country_id') ? DB::table('warehouse')->where('country', $request->country_id)->get() : [];
+        return view('admin.products.warehouse', compact('selectedWarehouseIds','countries', 'productId', 'productDetails', 'warehouses'));
+   }
+
+    public function saveProductWarehouses(Request $request, $productId) {
+        $selectedWarehouses = $request->input('warehouse_ids', []);
+        $allWarehouseIds = DB::table('warehouse')->pluck('id')->toArray();
+        foreach ($allWarehouseIds as $warehouseId) {
+            ProductWareHouse::updateOrInsert(
+                ['product_id' => $productId, 'warehouse_id' => $warehouseId],
+                ['status' => in_array($warehouseId, $selectedWarehouses) ? 1 : 0, 'updated_at' => now(), 'created_at' => now()]
+            );
+        }
+        return redirect()->back();
+    }
+
+
 }

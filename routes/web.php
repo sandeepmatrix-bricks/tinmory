@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Home\HighlightController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -61,11 +63,49 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::get('/admin/products/update-products-details/inventory/{id?}', [AdminController::class, 'update_product_details_inventory_show'])->name('admin.update_product_details_inventory_show');
     Route::get('/admin/products/update-products-details/faqs/{id?}', [AdminController::class, 'update_product_details_faqs_show'])->name('admin.update_product_details_faqs_show');
 
+    Route::prefix('admin/products')->group(function () {
+        Route::prefix('variant')->group(function () {
+            Route::get('/update_product_details/{id?}', [AdminController::class, 'showVariantLists'])
+                ->name('admin.update_product_details_show_variant');
 
+            Route::get('/add-variant-action/{prductId?}/{isview?}', [AdminController::class, 'showVariantFields'])
+                ->name('admin.variants_create');
+
+            Route::post('/add-variant', [AdminController::class, 'createNewVariant'])
+                ->name('admin.new_variant_insert');
+
+            Route::delete('/{id}', [AdminController::class, 'deleteVariant'])
+                ->name('admin.delete_variant');
+        });
+
+        Route::prefix('warehouse')->group(function () {
+            Route::get('/index/{id?}', [AdminController::class, 'showWareHouses'])
+                ->name('admin.show_warehouse');
+
+            Route::post('/save/{productId}', [AdminController::class, 'saveProductWarehouses'])
+                ->name('admin.save_warehouses');
+        });
+    });
     
+    Route::prefix('admin/home')->name('admin.home.')->group(function () {
+        Route::prefix('banners')->name('banners.')->group(function () {
+            Route::get('/', [HomeController::class, 'bannerIndex'])->name('index');
+            Route::get('/form', [HomeController::class, 'bannerStoreForm'])->name('form');
+            Route::post('/store', [HomeController::class, 'bannerStore'])->name('store');
+            Route::get('/{id}/edit', [HomeController::class, 'bannerEdit'])->name('edit');
+            Route::delete('/{id}', [HomeController::class, 'bannerDestroy'])->name('delete');
+        });
 
+        Route::prefix('desc')->name('desc.')->group(function () {
+            Route::get('/', [HomeController::class, 'descIndex'])->name('index');
+            Route::get('/form', [HomeController::class, 'descStoreForm'])->name('form');
+            Route::post('/store', [HomeController::class, 'descStore'])->name('store');
+            Route::get('/{id}/edit', [HomeController::class, 'descEdit'])->name('edit');
+            Route::delete('/{id}', [HomeController::class, 'descDestroy'])->name('delete');
+        });
 
-
+        Route::resource('/highlights', HighlightController::class)->names('highlights');
+    });
 
 });
 
@@ -79,7 +119,10 @@ Route::middleware(['auth', 'role:warehouse'])->group(function () {
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [DashboardController::class, 'user'])->name('user.dashboard');
+
+     
 });
+
 
 
 

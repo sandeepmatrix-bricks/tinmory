@@ -364,6 +364,22 @@
                     <li><a href="dashboard-03.html">Project</a></li> -->
                   </ul>
                 </li>
+
+                <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="#">
+                    <svg class="stroke-icon">
+                      <use href="{{asset('admin/assets/svg/icon-sprite.svg#stroke-ecommerce')}}"></use>
+                    </svg>
+                    <svg class="fill-icon">
+                      <use href="{{asset('admin/assets/svg/icon-sprite.svg')}}#fill-ecommerce"></use>
+                    </svg><span>Home</span></a>
+                  <ul class="sidebar-submenu">
+                    <li> <a href="{{route('admin.home.banners.index')}}">Banner Details</a></li>
+                    <li> <a href="{{route('admin.home.desc.index')}}">Description Details</a></li>
+                    <li><a href="{{ route('admin.home.highlights.index') }}">Highlight Details</a></li>
+                  </ul>
+                </li>
+               
+
                 <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="#">
                     <svg class="stroke-icon"> 
                       <use href="{{asset('admin/assets/svg/icon-sprite.svg#stroke-widget')}}"></use>
@@ -679,6 +695,201 @@ $(document).ready(function() {
     });
 });
 </script>
+  
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+<script src="{{ asset('admin/assets/js/notify/bootstrap-notify.min.js') }}"></script>
 
+<script src="{{ asset('admin/assets/js/notify/index.js') }}"></script>
+ 
+<!-- Custom Styles for List Formatting -->
+<style>
+    .ck-content ul {
+        list-style: disc !important;
+        padding-left: 20px !important;
+    }
+
+    .ck-content ol {
+        list-style: decimal !important;
+        padding-left: 20px !important;
+    }
+
+    .ck-content li {
+        margin-bottom: 5px;
+    }
+    .ck-editor__editable {
+        min-height: 200px;
+    }
+</style>
+
+<!-- CKEditor Initialization Script -->
+<script>
+    ClassicEditor.create(document.querySelector('#summernote'), {
+        toolbar: [
+            'heading',
+            '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript',
+            'link', 'blockQuote', 'codeBlock',
+            'bulletedList', 'numberedList', 'todoList',
+            '|',
+            'alignment', 'outdent', 'indent',
+            '|',
+            'fontColor', 'fontBackgroundColor', 'fontSize', 'fontFamily',
+            '|',
+            'insertTable', 'imageUpload', 'mediaEmbed', 'horizontalLine', 'pageBreak',
+            '|',
+            'undo', 'redo', 'removeFormat', 'highlight', 'specialCharacters'
+        ],
+
+        heading: {
+            options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+            ]
+        },
+
+        fontFamily: {
+            options: [
+                'default',
+                'Arial, Helvetica, sans-serif',
+                'Courier New, Courier, monospace',
+                'Georgia, serif',
+                'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                'Tahoma, Geneva, sans-serif',
+                'Times New Roman, Times, serif',
+                'Trebuchet MS, Helvetica, sans-serif',
+                'Verdana, Geneva, sans-serif'
+            ]
+        },
+
+        fontSize: {
+            options: ['tiny', 'small', 'default', 'big', 'huge']
+        },
+
+        alignment: {
+            options: ['left', 'center', 'right', 'justify']
+        }
+
+    }).catch(error => {
+        console.error(error);
+    });
+</script>
+
+<!-- Toastr Messages-->
+    @if (session('message'))
+      <script>
+          (function ($) {
+              "use strict";
+              var notify = $.notify(
+                  '<i class="fa fa-bell-o"></i><strong>{{ session('message') }}</strong>',
+                  {
+                      type: "theme",
+                      allow_dismiss: true,
+                      delay: 5000,
+                      showProgressbar: true,
+                      timer: 300,
+                      animate: {
+                          enter: "animated fadeInDown",
+                          exit: "animated fadeOutUp",
+                      },
+                  }
+              );
+          })(jQuery);
+      </script>
+    @endif
+ 
+    @if ($errors->any())
+        <script>
+            (function ($) {
+                "use strict";
+                var notify = $.notify(
+                  '<i class="fa fa-bell-o"></i><strong>@foreach ($errors->all() as $error) {{ $error }}<br> @endforeach</strong>',
+                    {
+                        type: "theme",
+                        allow_dismiss: true,
+                        delay: 5000,
+                        showProgressbar: true,
+                        timer: 300,
+                        animate: {
+                            enter: "animated fadeInDown",
+                            exit: "animated fadeOutUp",
+                        },
+                    }
+                );
+            })(jQuery);
+        </script>
+    @endif
+
+    
+  <!-- JS to Add/Remove Rows -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const tableBody = document.querySelector('#highlightItemsTable tbody');
+
+      // Function to create Add More button HTML
+      function addButtonHtml() {
+          return '<button type="button" class="btn btn-primary addRow">Add More</button>';
+      }
+
+      // Function to create Remove button HTML
+      function removeButtonHtml() {
+          return '<button type="button" class="btn btn-danger removeRow">Remove</button>';
+      }
+
+      // Add Row
+      function addRow() {
+          // Change last row's action button from Add to Remove
+          const lastRow = tableBody.querySelector('tr:last-child');
+          lastRow.querySelector('td:last-child').innerHTML = removeButtonHtml();
+
+          // Create new row
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+              <td>
+                  <input type="file" name="icons[]" accept="image/*" class="form-control" required>
+                  <small class="text-secondary">Max size 2MB. Format: jpg, jpeg, png, webp</small>
+              </td>
+              <td>
+                  <input type="text" name="titles[]" placeholder="Enter Title" class="form-control" required>
+              </td>
+              <td>
+                  <textarea name="descriptions[]" placeholder="Enter Description" class="form-control" required></textarea>
+              </td>
+              <td>${addButtonHtml()}</td>
+          `;
+
+          tableBody.appendChild(newRow);
+      }
+
+      // Event delegation for Add More & Remove buttons
+      tableBody.addEventListener('click', function(e) {
+          if (e.target.classList.contains('addRow')) {
+              addRow();
+          }
+
+          if (e.target.classList.contains('removeRow')) {
+              e.target.closest('tr').remove();
+
+              // After removal, update the last row button to Add More
+              const rows = tableBody.querySelectorAll('tr');
+              if (rows.length > 0) {
+                  rows.forEach((row, index) => {
+                      const actionCell = row.querySelector('td:last-child');
+                      if (index === rows.length - 1) {
+                          actionCell.innerHTML = addButtonHtml();
+                      } else {
+                          actionCell.innerHTML = removeButtonHtml();
+                      }
+                  });
+              }
+          }
+      });
+  });
+  </script>
   </body>
 </html>

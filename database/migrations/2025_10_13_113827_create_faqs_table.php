@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('faqs', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('question');
-            $table->text('answer');
+            $table->string('title')->nullable();
+            $table->string('question')->nullable();
+            $table->text('answer')->nullable();
+            $table->string('type')->nullable();
             $table->softDeletes(); 
             $table->timestamps();
         });

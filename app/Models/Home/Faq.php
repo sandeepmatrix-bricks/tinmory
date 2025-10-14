@@ -16,5 +16,6 @@ class Faq extends Model
         'title',
         'question',
         'answer',
+        'type'
     ];
 }

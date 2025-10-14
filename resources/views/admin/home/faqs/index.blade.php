@@ -30,33 +30,69 @@
 
       <!-- FAQ Title Card -->
       <div class="col-sm-12">
-        <div class="card">
-          <div class="card-header pb-0 card-no-border">
-            <h5>FAQ Section Title</h5>
-            @if(isset($faqTitle))
-              <a href="{{ route('admin.home.faqs.edit', ['faq' => $faqTitle->id, 'type' => 'title']) }}" 
-                 class="btn btn-primary" 
-                 style="float: right;">
-                <i class="fa fa-pencil-alt"></i> Edit Title
-              </a>
-            @else
-              <a href="{{ route('admin.home.faqs.create', ['type' => 'title']) }}" 
-                 class="btn btn-primary" 
-                 style="float: right;">
-                <i class="fa fa-plus"></i> Add Title
-              </a>
-            @endif
-          </div>
+  <div class="card">
 
-          <div class="card-body">
-            @if(isset($faqTitle))
-              <p class="mb-0">{{ $faqTitle->question }}</p>
+    <div class="card-header pb-0 card-no-border">
+      <h5>FAQ Section Title</h5>
+
+        <a href="{{ route('admin.home.faqs.create', ['type' => 'title']) }}" 
+           class="btn btn-primary" 
+           style="float: right;">
+          <i class="fa fa-plus"></i> Add Title
+        </a>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive custom-scrollbar">
+        <table class="display" id="basic-2">
+          <thead>
+            <tr>
+              <th>Sr.No.</th>
+              <th>Title</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @if(isset($title) )
+                <tr>
+                  <td>1</td>
+                  <td>{{ $title->title ?? '-' }}</td>
+                  <td>
+                    <ul class="action">
+                      <li class="edit">
+                        <a href="{{ route('admin.home.faqs.edit', ['faq' => $title->id, 'type' => 'title']) }}" title="Edit">
+                          <i class="icon-pencil-alt"></i>
+                        </a>
+                      </li>
+                      <li class="delete">
+                        <form action="{{ route('admin.home.faqs.destroy', $title->id) }}" 
+                              method="POST" 
+                              onsubmit="return confirm('Are you sure you want to delete this title?');"
+                              style="display: inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" style="all: unset; cursor: pointer;" title="Delete">
+                            <i class="icon-trash"></i>
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
             @else
-              <p class="text-muted mb-0">No title added yet.</p>
+              <tr>
+                <td colspan="3" class="text-center text-muted">No title added yet.</td>
+              </tr>
             @endif
-          </div>
-        </div>
+          </tbody>
+        </table>
       </div>
+    </div>
+
+  </div>
+</div>
+
 
       <!-- FAQ List Card -->
       <div class="col-sm-12">
@@ -82,7 +118,7 @@
 
                 <tbody>
                   @php $i = 1; @endphp
-                  @foreach($FaqData as $faq)
+                  @foreach($qa as $faq)
                     <tr>
                       <td>{{ $i++ }}</td>
                       <td>{!! Str::limit($faq->question, 80) !!}</td>
@@ -113,7 +149,7 @@
                 </tbody>
               </table>
 
-              @if($FaqData->isEmpty())
+              @if($qa->isEmpty())
                 <p class="text-center text-muted mt-3">No FAQs added yet.</p>
               @endif
             </div>

@@ -378,6 +378,7 @@
                     <li><a href="{{ route('admin.home.highlights.index') }}">Highlight Details</a></li>
                     <li><a href="{{ route('admin.home.carousels.index') }}">Carousels Details</a></li>
                     <li><a href="{{ route('admin.home.faqs.index') }}">FAQ Details</a></li>
+                    <li><a href="{{ route('admin.home.contact.index') }}">Contact Details</a></li>
                   </ul>
                 </li>
                

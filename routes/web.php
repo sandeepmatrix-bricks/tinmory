@@ -8,6 +8,7 @@ use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Home\HighlightController;
 use App\Http\Controllers\Home\CarouselController;
 use App\Http\Controllers\Home\FaqController;
+use App\Http\Controllers\Home\ContactController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -109,6 +110,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
         Route::resource('/highlights', HighlightController::class)->names('highlights');
         Route::resource('/carousels', CarouselController::class)->names('carousels');
         Route::resource('/faqs', FaqController::class)->names('faqs');
+        Route::resource('/contact', ContactController::class)->names('contact');
     });
 
 });

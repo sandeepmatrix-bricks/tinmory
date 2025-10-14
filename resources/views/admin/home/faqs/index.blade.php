@@ -28,6 +28,37 @@
   <div class="container-fluid">
     <div class="row">
 
+      <!-- FAQ Title Card -->
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header pb-0 card-no-border">
+            <h5>FAQ Section Title</h5>
+            @if(isset($faqTitle))
+              <a href="{{ route('admin.home.faqs.edit', ['faq' => $faqTitle->id, 'type' => 'title']) }}" 
+                 class="btn btn-primary" 
+                 style="float: right;">
+                <i class="fa fa-pencil-alt"></i> Edit Title
+              </a>
+            @else
+              <a href="{{ route('admin.home.faqs.create', ['type' => 'title']) }}" 
+                 class="btn btn-primary" 
+                 style="float: right;">
+                <i class="fa fa-plus"></i> Add Title
+              </a>
+            @endif
+          </div>
+
+          <div class="card-body">
+            @if(isset($faqTitle))
+              <p class="mb-0">{{ $faqTitle->question }}</p>
+            @else
+              <p class="text-muted mb-0">No title added yet.</p>
+            @endif
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ List Card -->
       <div class="col-sm-12">
         <div class="card">
 
@@ -43,7 +74,6 @@
                 <thead>
                   <tr>
                     <th>Sr.No.</th>
-                    <th>Title</th>
                     <th>Question</th>
                     <th>Answer</th>
                     <th>Action</th>
@@ -55,7 +85,6 @@
                   @foreach($FaqData as $faq)
                     <tr>
                       <td>{{ $i++ }}</td>
-                      <td>{{ $faq->title }}</td>
                       <td>{!! Str::limit($faq->question, 80) !!}</td>
                       <td>{!! Str::limit($faq->answer, 100) !!}</td>
                       <td>
@@ -95,6 +124,7 @@
 
     </div>
   </div>
+  
   <!-- Container-fluid Ends -->
 </div>
 @endsection

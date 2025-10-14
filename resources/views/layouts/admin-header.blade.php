@@ -828,6 +828,70 @@ $(document).ready(function() {
     @endif
 
   
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableBody = document.querySelector('#highlightItemsTable tbody');
 
+        // Function to create Add More button HTML
+        function addButtonHtml() {
+            return '<button type="button" class="btn btn-primary addRow">Add More</button>';
+        }
+
+        // Function to create Remove button HTML
+        function removeButtonHtml() {
+            return '<button type="button" class="btn btn-danger removeRow">Remove</button>';
+        }
+
+        // Add Row
+        function addRow() {
+            // Change last row's action button from Add to Remove
+            const lastRow = tableBody.querySelector('tr:last-child');
+            lastRow.querySelector('td:last-child').innerHTML = removeButtonHtml();
+
+            // Create new row
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>
+                    <input type="file" name="icons[]" accept="image/*" class="form-control" required>
+                    <small class="text-secondary">Max size 2MB. Format: jpg, jpeg, png, webp</small>
+                </td>
+                <td>
+                    <input type="text" name="titles[]" placeholder="Enter Title" class="form-control" required>
+                </td>
+                <td>
+                    <textarea name="descriptions[]" placeholder="Enter Description" class="form-control" required></textarea>
+                </td>
+                <td>${addButtonHtml()}</td>
+            `;
+
+            tableBody.appendChild(newRow);
+        }
+
+        // Event delegation for Add More & Remove buttons
+        tableBody.addEventListener('click', function(e) {
+            if (e.target.classList.contains('addRow')) {
+                addRow();
+            }
+
+            if (e.target.classList.contains('removeRow')) {
+                e.target.closest('tr').remove();
+    
+
+                // After removal, update the last row button to Add More
+                const rows = tableBody.querySelectorAll('tr');
+                if (rows.length > 0) {
+                    rows.forEach((row, index) => {
+                        const actionCell = row.querySelector('td:last-child');
+                        if (index === rows.length - 1) {
+                            actionCell.innerHTML = addButtonHtml();
+                        } else {
+                            actionCell.innerHTML = removeButtonHtml();
+                        }
+                    });
+                }
+            }
+        });
+    });
+  </script>
   </body>
 </html>

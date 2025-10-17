@@ -9,6 +9,7 @@ use App\Http\Controllers\Home\HighlightController;
 use App\Http\Controllers\Home\CarouselController;
 use App\Http\Controllers\Home\FaqController;
 use App\Http\Controllers\Home\ContactController;
+use App\Http\Controllers\product\InventoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -88,6 +89,30 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
             Route::post('/save/{productId}', [AdminController::class, 'saveProductWarehouses'])
                 ->name('admin.save_warehouses');
         });
+
+        Route::prefix('price')->group(function () {
+            Route::get('/index/{id?}', [AdminController::class, 'showPrices'])
+                ->name('admin.show_price');
+
+            Route::post('/save', [AdminController::class, 'saveVariantPrices'])
+                ->name('admin.save_prices');
+        });
+
+        Route::prefix('inventory')->group(function () {
+            Route::get('/index/{id?}', [InventoryController::class, 'index'])
+                ->name('admin.inventory.index');
+
+            Route::post('/save', [InventoryController::class, 'store'])
+                ->name('admin.inventory.save');
+
+            // Route::get('/edit/{id}', [InventoryController::class, 'edit'])
+            //     ->name('admin.inventory.edit');
+
+            // Route::post('/update/{id}', [InventoryController::class, 'update'])
+            //     ->name('admin.inventory.update');
+        });
+
+
     });
     
     Route::prefix('admin/home')->name('admin.home.')->group(function () {

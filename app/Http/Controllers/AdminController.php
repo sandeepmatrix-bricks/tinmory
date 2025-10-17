@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Auth;
 use App\Models\VariantType;
 use App\Models\ProductWareHouse;
+use App\Models\VariantPriceWithCountry;
 use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
 {
@@ -392,5 +393,88 @@ class AdminController extends Controller
         return redirect()->back();
     }
 
+    public function showPrices(Request $request, $productId)
+    {
+        // Fetch product info
+        $productDetails = DB::table('all_products')
+            ->select('id', 'product_name')
+            ->where('id', $productId)
+            ->first();
+
+        if (!$productDetails) {
+            abort(404, 'Product not found');
+        }
+
+        // Prepare base query
+        $query = DB::table('variant_types')
+            ->select(
+                'variant_types.id',
+                'variant_types.product_id',
+                'variant_types.color_code',
+                'variant_types.color_name',
+                'variant_types.sku',
+                'variant_price_with_countries.price',
+                'variant_price_with_countries.status'
+            )
+            ->leftJoin('variant_price_with_countries', function ($join) use ($request, $productId) {
+                $join->on('variant_types.id', '=', 'variant_price_with_countries.variant_id')
+                    ->where('variant_price_with_countries.product_id', '=', $productId);
+
+                if ($request->has('country_id')) {
+                    $join->where('variant_price_with_countries.country_id', '=', $request->country_id);
+                }
+            })
+            ->where('variant_types.product_id', $productId)
+            ->orderBy('variant_types.id', 'asc');
+
+        $allVariants = $query->get();
+
+        // Return JSON for AJAX requests
+        if ($request->ajax()) {
+            return response()->json($allVariants);
+        }
+
+        // For normal page load
+        $countries = DB::table('countries')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.products.price', compact('countries', 'productId', 'productDetails', 'allVariants'));
+    }
+
+    public function saveVariantPrices(Request $request)
+    {
+        $request->validate([
+            'country_id' => 'required|integer|exists:countries,id',
+            'product_id' => 'required|integer|exists:all_products,id',
+            'prices' => 'required|array',
+        ]);
+
+        $countryId = $request->country_id;
+        $productId = $request->product_id;
+        $prices = $request->prices;
+        $statuses = $request->status ?? [];
+
+        foreach ($prices as $variantId => $price) {
+            if (is_null($price) || $price === '') {
+                continue;
+            }
+
+            VariantPriceWithCountry::updateOrCreate(
+                [
+                    'product_id' => $productId,
+                    'country_id' => $countryId,
+                    'variant_id' => $variantId,
+                ],
+                [
+                    'price' => $price,
+                    'status' => isset($statuses[$variantId]) ? 1 : 0,
+                ]
+            );
+        }
+
+        return back()->with('success', 'Variant prices and statuses updated successfully.');
+    }
 
 }

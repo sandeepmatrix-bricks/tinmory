@@ -38,8 +38,8 @@
                             <a class="btn btn-outline-primary btn-sm" href="{{route('admin.update_product_details_gallery_show')}}/{{$product_id}}" title="Gallery">Product Gallery</a>
                             <a class="btn btn-outline-primary btn-sm" href="{{route('admin.update_product_details_show_variant')}}/{{$product_id}}" title="Price">Variant</a>
                             <a class="btn btn-outline-primary btn-sm" href="{{route('admin.show_warehouse')}}/{{$product_id}}" title="Price">Warehouse</a>
-                            <a class="btn btn-outline-primary btn-sm" href="" title="Price">Price</a>
-                            <a class="btn btn-outline-primary btn-sm" href="" title="Inventory">Inventory</a>
+                            <a class="btn btn-outline-primary btn-sm" href="{{route('admin.show_price')}}/{{$product_id}}" title="Price">Price</a>
+                            <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.inventory.index')}}/{{$product_id}}" title="Inventory">Inventory</a>
                             <a class="btn btn-outline-primary btn-sm" href="" title="Advance">Tag</a>
                             <a class="btn btn-outline-primary btn-sm" href="" title="FAQ">FAQ</a>
                             

@@ -45,4 +45,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function updatedInventories() {
+        return $this->hasMany(Inventory::class, 'updated_by');
+    }
 }

@@ -102,6 +102,9 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
             Route::get('/index/{id?}', [InventoryController::class, 'index'])
                 ->name('admin.inventory.index');
 
+            Route::get('/create/{id?}', [InventoryController::class, 'create'])
+            ->name('admin.inventory.create');
+
             Route::post('/save', [InventoryController::class, 'store'])
                 ->name('admin.inventory.save');
 

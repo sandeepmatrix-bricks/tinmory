@@ -48,36 +48,36 @@
                              <th>Action</th>
                           </tr>
                         </thead>
-                            <tbody>
-                                @php $i = 1; @endphp
+                          <tbody>
+                              @php $i = 1; @endphp
 
-                                @foreach($variantList as $variant)
-                                    <tr>
-                                        <td>{{ $i++ }}</td>
-                                        <td>{{ $variant->color_code }}</td>
-                                        <td>{{ $variant->color_name }}</td>
-                                        <td>{{ $variant->sku }}</td>
-                                        <td>
-                                            <ul class="action">
-                                                <li class="edit">
-                                                    <a href="{{ route('admin.variants_create', ['prductId' => $variant->id, 'isview' => true]) }}">
-                                                        <i class="icon-pencil-alt"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="delete">
-                                                    <form action="{{ route('admin.delete_variant', $variant->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this variant?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer; color: #dc3545;">
-                                                            <i class="icon-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
+                              @foreach($variantList as $variant)
+                                  <tr>
+                                      <td>{{ $i++ }}</td>
+                                      <td>{{ $variant->color_code }}</td>
+                                      <td>{{ $variant->color_name }}</td>
+                                      <td>{{ $variant->sku }}</td>
+                                      <td>
+                                          <ul class="action">
+                                              <li class="edit">
+                                                  <a href="{{ route('admin.variants_create', ['prductId' => $variant->id, 'isview' => true]) }}">
+                                                      <i class="icon-pencil-alt"></i>
+                                                  </a>
+                                              </li>
+                                              <li class="delete">
+                                                  <form action="{{ route('admin.delete_variant', $variant->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this variant?');">
+                                                      @csrf
+                                                      @method('DELETE')
+                                                      <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer; color: #dc3545;">
+                                                          <i class="icon-trash"></i>
+                                                      </button>
+                                                  </form>
+                                              </li>
+                                          </ul>
+                                      </td>
+                                  </tr>
+                              @endforeach
+                          </tbody>
 
                       </table>
                     </div>

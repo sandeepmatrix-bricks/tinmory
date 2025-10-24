@@ -547,7 +547,7 @@
                                     <li><a href="{{route('admin.add_product_show')}}">Add Products</a></li>
                                     <li><a href="{{route('admin.all_products_show')}}">Products</a></li>
                                     <li><a href="{{route('admin.all_catgeory_show')}}">Category</a></li>
-                                    <li><a href="order-history.html">Orders</a></li>
+                                    <li><a href="order-history.html">Orders</a></li> 
                                     <li><a href="order-history.html">Invoices</a></li>
                                     <li><a href="cart.html">Cart</a></li>
                                     <li><a href="list-wish.html">Wishlist</a></li>

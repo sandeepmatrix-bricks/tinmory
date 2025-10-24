@@ -16,4 +16,6 @@ class Warehouse extends Model
     {
         return $this->hasMany(Inventory::class);
     }
+
+    
 }

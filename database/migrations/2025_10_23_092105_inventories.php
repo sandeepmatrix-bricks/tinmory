@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('available_quantity')->virtualAs('stock_quantity - reserved_quantity');
             $table->boolean('status')->default(true)->comment('1 = enabled, 0 = disabled');
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->unique(['product_id', 'variant_id', 'warehouse_id'], 'unique_inventory_entry');
+            $table->softDeletes(); 
             $table->timestamps();
         });    
     }

@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Inventory extends Model
 {
    
-
+    use SoftDeletes;
+    
     protected $fillable = [
         'product_id', 'variant_id', 'warehouse_id',
         'stock_quantity', 'reserved_quantity', 'updated_by'

@@ -131,7 +131,7 @@
                       <td>
                         <ul class="action">
                           <li class="edit">
-                            <a href="">
+                            <a href="{{ route('admin.inventory.edit', $inventory->id) }}">
                               <i class="icon-pencil-alt"></i>
                             </a>
                           </li>

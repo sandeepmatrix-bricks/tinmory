@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Home\HighlightController;
 use App\Http\Controllers\Home\CarouselController;
@@ -108,11 +109,11 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
             Route::post('/save', [InventoryController::class, 'store'])
                 ->name('admin.inventory.save');
 
-            // Route::get('/edit/{id}', [InventoryController::class, 'edit'])
-            //     ->name('admin.inventory.edit');
+            Route::get('/edit/{inventoryId}', [InventoryController::class, 'edit'])
+                ->name('admin.inventory.edit');
 
-            // Route::post('/update/{id}', [InventoryController::class, 'update'])
-            //     ->name('admin.inventory.update');
+            Route::post('/update', [InventoryController::class, 'update'])
+                ->name('admin.inventory.update');
         });
 
 
@@ -149,6 +150,10 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
 
 Route::middleware(['auth', 'role:warehouse'])->group(function () {
     Route::get('/warehouse/dashboard', [DashboardController::class, 'warehouse'])->name('warehouse.dashboard');
+    Route::prefix('warehouse')->name('warehouse.')->group(function () {
+            Route::get('/', [WarehouseController::class, 'listAllProducts'])->name('show_products');
+            // Route::get('/', [AdminController::class, 'add_product_show'])->name('show_products');
+    });
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {

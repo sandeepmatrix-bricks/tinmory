@@ -299,7 +299,7 @@ class AdminController extends Controller
     }
 
     public function showVariantLists($productId) {
-
+        
         $variantList = VariantType::where('product_id',$productId)->get();
         $productDetails = DB::table('all_products')->select('product_name')->where('id','=',$productId)->first();
         return view('admin.products.variant',compact('variantList','productId','productDetails'));
